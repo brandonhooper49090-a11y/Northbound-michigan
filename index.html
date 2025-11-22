@@ -1,10 +1,304 @@
-<!DOCTYPE html>
-<html>
+<!doctype html>
+<html lang="en">
 <head>
-  <title>Northbound Michigan</title>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width,initial-scale=1" />
+<title>Northbound Michigan</title>
+<meta name="description" content="Northbound Michigan — vintage maps, DNR updates and live weather for Michigan outdoors.">
+
+<style>
+  :root{
+    --cream:#f7efe1;
+    --paper:#efe0c9;
+    --ink:#2e3a2e;
+    --forest:#0e241a;
+    --accent:#c45a1f; /* hunter orange */
+    --max:1100px;
+    --radius:10px;
+  }
+  *{box-sizing:border-box}
+  body{
+    margin:0;
+    font-family: "Georgia", "Times New Roman", serif;
+    background: linear-gradient(180deg,var(--paper),var(--cream));
+    color:var(--ink);
+    -webkit-font-smoothing:antialiased;
+  }
+
+  /* NAV */
+  header.site-nav{
+    background: linear-gradient(90deg, rgba(14,36,26,0.95), rgba(10,20,18,0.95));
+    color: var(--cream);
+    position: sticky;
+    top: 0;
+    z-index: 30;
+    border-bottom: 3px solid rgba(196,90,31,0.15);
+  }
+  .nav-inner{
+    max-width:var(--max);
+    margin:auto;
+    display:flex;
+    gap:1rem;
+    align-items:center;
+    justify-content:space-between;
+    padding:12px 16px;
+  }
+  .brand {display:flex;gap:.6rem;align-items:center}
+  .brand h1{margin:0;font-size:1.05rem;color:var(--accent);letter-spacing:.08em}
+  nav a{color:var(--cream); text-decoration:none; padding:8px 10px; border-radius:8px; font-weight:600}
+  nav a:hover{background:rgba(255,255,255,0.03); color:var(--accent)}
+
+  /* HERO */
+  .hero{
+    text-align:center;
+    padding:48px 16px 36px;
+  }
+  .hero h2{margin:0;font-size:2.6rem;color:var(--forest);letter-spacing:.02em}
+  .hero p{max-width:760px;margin:12px auto;color:#3d533f;font-size:1.05rem}
+
+  /* MAIN GRID */
+  .main {
+    max-width:var(--max);
+    margin: 20px auto 60px;
+    padding: 0 16px;
+    display:grid;
+    grid-template-columns: 1fr 360px;
+    gap:20px;
+    align-items:start;
+  }
+
+  /* CARDS */
+  .card{
+    background: linear-gradient(180deg, rgba(255,255,255,0.86), rgba(255,250,240,0.9));
+    border-radius:var(--radius);
+    padding:14px;
+    border:1px solid rgba(10,20,12,0.06);
+    box-shadow: 0 6px 18px rgba(20,30,20,0.06);
+  }
+  h3{margin:0 0 .6rem;color:var(--accent)}
+
+  /* WEATHER */
+  .weather-top{display:flex;align-items:center;justify-content:space-between;gap:12px}
+  .temp{font-size:2rem;font-weight:800;color:var(--forest)}
+  .small{font-size:.9rem;color:#4e6a57}
+
+  /* NEWS LIST */
+  .news-list{list-style:none;padding:0;margin:0;display:grid;gap:8px}
+  .news-item{padding:8px;border-radius:8px;background:rgba(10,20,10,0.02);border:1px solid rgba(0,0,0,0.02)}
+  .news-item a{color:var(--forest);font-weight:700;text-decoration:none}
+
+  /* GALLERY */
+  .gallery{display:grid;grid-template-columns:repeat(2,1fr);gap:8px}
+  .gallery img{width:100%;height:140px;object-fit:cover;border-radius:8px;display:block}
+
+  /* SIDEBAR */
+  aside.sidebar{display:flex;flex-direction:column;gap:12px}
+
+  /* FOOTER */
+  footer.site-foot{background:var(--forest);color:var(--paper);padding:18px;text-align:center;margin-top:30px}
+
+  /* responsive */
+  @media (max-width:980px){
+    .main{grid-template-columns:1fr}
+    .gallery img{height:120px}
+    .hero h2{font-size:1.8rem}
+  }
+</style>
 </head>
 <body>
-  <h1>Welcome to Northbound Michigan</h1>
-  <p>Your site is live!</p>
-</body>
-</html>
+
+<header class="site-nav" role="banner">
+  <div class="nav-inner">
+    <div class="brand" aria-label="Northbound Michigan">
+      <!-- optional logo: place content/logo-full.png in repo if you want it visible -->
+      <img src="content/logo-full.png" alt="logo" style="height:46px;border-radius:6px;display:inline-block" onerror="this.style.display='none'"/>
+      <h1>Northbound Michigan</h1>
+    </div>
+
+    <nav aria-label="Main navigation">
+      <a href="#home">Home</a>
+      <a href="#maps">Vintage Maps</a>
+      <a href="#dnr">DNR</a>
+      <a href="#weather">Weather</a>
+      <a href="#contact">Contact</a>
+    </nav>
+  </div>
+</header>
+
+<section id="home" class="hero" role="region" aria-labelledby="home-title">
+  <h2 id="home-title">Northbound Michigan — Vintage Maps & Trail Info</h2>
+  <p>Your guide to Michigan outdoors: vintage maps, official DNR notices, and live trail weather.</p>
+</section>
+
+<main class="main" role="main">
+
+  <section aria-labelledby="left-head">
+    <div class="card" id="weather-card" aria-labelledby="weather-head">
+      <h3 id="weather-head">Live Weather</h3>
+      <div class="weather-top">
+        <div>
+          <div class="temp" id="nb-temp">--°</div>
+          <div class="small" id="nb-cond">Loading…</div>
+        </div>
+        <div style="text-align:right">
+          <div id="nb-place" class="small">Michigan (fallback)</div>
+          <div style="margin-top:8px"><button id="refreshBtn" style="background:var(--accent);border:none;padding:8px 12px;border-radius:6px;color:white;font-weight:700;cursor:pointer">Refresh</button></div>
+        </div>
+      </div>
+      <div style="margin-top:12px;color:#4c6b58" id="nb-forecast"></div>
+    </div>
+
+    <div class="card" style="margin-top:16px;" id="dnr-card" aria-labelledby="dnr-head">
+      <h3 id="dnr-head">Michigan DNR & Outdoor News</h3>
+      <p class="small">Official DNR resources and curated outdoors headlines.</p>
+
+      <ul id="newsList" class="news-list" aria-live="polite">
+        <li class="news-item">Loading news…</li>
+      </ul>
+
+      <p style="margin-top:8px;font-size:.85rem;color:#6a7b6a">
+        To enable live DNR feed: set the `DNR_RSS_JSON` variable in the script section (below) to a working RSS->JSON URL (or place a `content/dnr.json` file in this repo).
+      </p>
+    </div>
+
+    <div class="card" style="margin-top:16px;" id="maps-card" aria-labelledby="maps-head">
+      <h3 id="maps-head">Vintage Maps</h3>
+      <p class="small">Classic Michigan maps — add your map files to <code>content/maps/</code> as map1.jpg, map2.jpg…</p>
+      <div class="gallery" id="mapGallery">
+        <img src="https://upload.wikimedia.org/wikipedia/commons/9/98/Old_map_of_Michigan_%281838%29.jpg" alt="Map 1">
+        <img src="https://upload.wikimedia.org/wikipedia/commons/3/3c/1881_Michigan_Map.jpg" alt="Map 2">
+      </div>
+    </div>
+  </section>
+
+  <aside class="sidebar" aria-labelledby="sidebar-head">
+    <div class="card">
+      <h3 id="sidebar-head">Quick Links</h3>
+      <p style="margin:0 0 10px 0"><a href="https://www.michigan.gov/dnr" target="_blank">Michigan DNR Website</a></p>
+      <p style="margin:0 0 10px 0"><a href="https://www.michigan.gov/dnr/things-to-do/hunting" target="_blank">Hunting</a></p>
+      <p style="margin:0 0 10px 0"><a href="https://www.michigan.gov/dnr/things-to-do/fishing" target="_blank">Fishing</a></p>
+    </div>
+
+    <div class="card">
+      <h3>Subscribe</h3>
+      <p class="small">Placeholder — connect Mailchimp / ConvertKit here later.</p>
+      <p style="margin-top:8px"><a href="#contact" style="display:inline-block;background:var(--accent);padding:8px 12px;border-radius:6px;color:white;font-weight:700;text-decoration:none">Contact / Sponsor</a></p>
+    </div>
+
+  </aside>
+
+</main>
+
+<footer class="site-foot" role="contentinfo">
+  <div>© <span id="year"></span> Northbound Michigan — maps, news, weather.</div>
+</footer>
+
+<script>
+/*
+ ONE FILE: To configure live DNR news set DNR_RSS_JSON below to a working RSS->JSON URL.
+ Example (rss2json public): 'https://api.rss2json.com/v1/api.json?rss_url=https://www.michigan.gov/dnr/news.rss'
+ If CORS blocks, instead create content/dnr.json in the repo with the shape { items: [ {title, link, pubDate} ] }
+*/
+
+const DNR_RSS_JSON = null; // <-- PUT feed URL string here if you have one
+
+// ---------- Weather (Open-Meteo) ----------
+const MICH_CENTER = { lat:44.5, lon:-85.0 };
+
+async function fetchWeather(lat, lon){
+  try{
+    const url = `https://api.open-meteo.com/v1/forecast?latitude=${lat}&longitude=${lon}&current_weather=true&timezone=auto`;
+    const r = await fetch(url);
+    if(!r.ok) throw new Error('Weather fetch failed');
+    const j = await r.json();
+    return j;
+  }catch(e){
+    console.warn('weather error',e);
+    return null;
+  }
+}
+
+async function showWeather(){
+  const tempEl = document.getElementById('nb-temp');
+  const condEl = document.getElementById('nb-cond');
+  const placeEl = document.getElementById('nb-place');
+  const forecastEl = document.getElementById('nb-forecast');
+
+  function displayFallback(){
+    tempEl.textContent = '—°';
+    condEl.textContent = 'Unable to load weather';
+    placeEl.textContent = 'Michigan';
+    forecastEl.textContent = '';
+  }
+
+  if(navigator.geolocation){
+    navigator.geolocation.getCurrentPosition(async pos=>{
+      const res = await fetchWeather(pos.coords.latitude, pos.coords.longitude);
+      if(!res || !res.current_weather){ displayFallback(); return; }
+      const cw = res.current_weather;
+      tempEl.textContent = Math.round(cw.temperature) + '°C';
+      condEl.textContent = 'Wind ' + cw.windspeed + ' km/h • Code ' + cw.weathercode;
+      placeEl.textContent = 'Your location';
+      forecastEl.textContent = 'Forecast available from Open-Meteo';
+    }, async ()=>{
+      const res = await fetchWeather(MICH_CENTER.lat, MICH_CENTER.lon);
+      if(!res || !res.current_weather){ displayFallback(); return; }
+      const cw = res.current_weather;
+      tempEl.textContent = Math.round(cw.temperature) + '°C';
+      condEl.textContent = 'Wind ' + cw.windspeed + ' km/h';
+      placeEl.textContent = 'Center of Michigan';
+      forecastEl.textContent = 'Forecast available from Open-Meteo';
+    }, {timeout:7000});
+  } else {
+    const res = await fetchWeather(MICH_CENTER.lat, MICH_CENTER.lon);
+    if(!res || !res.current_weather){ displayFallback(); return; }
+    const cw = res.current_weather;
+    tempEl.textContent = Math.round(cw.temperature) + '°C';
+    condEl.textContent = 'Wind ' + cw.windspeed + ' km/h';
+    placeEl.textContent = 'Center of Michigan';
+    forecastEl.textContent = 'Forecast available from Open-Meteo';
+  }
+}
+
+document.getElementById('refreshBtn').addEventListener('click', showWeather);
+showWeather();
+
+// ---------- News / DNR ----------
+async function loadNews(){
+  const list = document.getElementById('newsList');
+
+  // If repo has a static content/dnr.json, prefer that (no CORS)
+  try{
+    const local = await fetch('content/dnr.json').then(r=> r.ok ? r.json() : null).catch(()=>null);
+    if(local && Array.isArray(local.items)){
+      renderNews(local.items);
+      return;
+    }
+  }catch(e){ /* continue */ }
+
+  if(!DNR_RSS_JSON){
+    list.innerHTML = '<li class="news-item">No live DNR feed configured. To enable live feeds, edit index.html and set DNR_RSS_JSON to an RSS->JSON URL, or add content/dnr.json to the repo.</li>';
+    return;
+  }
+
+  try{
+    const r = await fetch(DNR_RSS_JSON);
+    if(!r.ok) throw new Error('Feed fetch failed');
+    const data = await r.json();
+    const items = data.items || [];
+    renderNews(items);
+  }catch(err){
+    console.error('news error', err);
+    list.innerHTML = `<li class="news-item">Failed to load news: ${String(err.message || err)}</li>`;
+  }
+}
+
+function renderNews(items){
+  const list = document.getElementById('newsList');
+  if(!items || items.length === 0){
+    list.innerHTML = '<li class="news-item">No items found in feed.</li>';
+    return;
+  }
+  list.innerHTML = items.slice(0,8).map(it => {
+    const title = it.title || it.title_no_html || '(no title)';
+    const href = it.link || it.url || '#';
